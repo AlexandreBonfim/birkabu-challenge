@@ -70,3 +70,7 @@ group :development, :test do
   # https://docs.rubocop.org/rubocop-rspec/installation.html
   gem "rubocop-rspec"
 end
+
+group :development do
+  gem "annot8", "~> 1.0"
+end
