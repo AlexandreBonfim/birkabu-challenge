@@ -233,7 +233,7 @@ GEM
       thor (~> 1.0, >= 1.2.2)
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
-    rake (13.3.0)
+    rake (13.3.1)
     rbi (0.3.6)
       prism (~> 1.0)
       rbs (>= 3.4.4)
