@@ -11,7 +11,9 @@ class Api::V1::MedicalRecordsController < ApplicationController
     record.document.attach(document)
 
     if record.save
-      render json: MedicalRecordSerializer.new(record).as_json,
+      MedicalRecordProcessor.new(record).call
+
+      render json: MedicalRecordSerializer.new(record.reload).as_json,
              status: :created
     else
       render json: { errors: record.errors.full_messages },

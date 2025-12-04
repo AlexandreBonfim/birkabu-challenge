@@ -6,18 +6,17 @@ RSpec.describe "MedicalRecords API", type: :request do
   describe "POST /api/v1/medical_records" do
     let(:file) { fixture_file_upload("sample.txt", "text/plain") }
 
-    it "creates a medical record with an attached document" do
+    it "creates and processes a medical record" do
       post "/api/v1/medical_records",
            params: { document: file }
 
       expect(response).to have_http_status(:created)
-      expect(json["id"]).to be_present
-      expect(json["external_id"]).to be_present
-      expect(json["status"]).to eq("pending")
+      json = JSON.parse(response.body)
 
       record = MedicalRecord.find(json["id"])
-      
-      expect(record.document).to be_attached
+      expect(record.status).to eq("processed")
+      expect(record.raw_text).to include("This is a test medical record text.")
+      expect(record.structured_data["raw_preview"]).to be_present
     end
   end
 
