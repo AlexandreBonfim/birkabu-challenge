@@ -27,18 +27,21 @@ RSpec.describe MedicalRecord, type: :model do
 
   it "requires external_id" do
     record = described_class.new(status: "pending")
+
     expect(record).not_to be_valid
     expect(record.errors[:external_id]).to include("can't be blank")
   end
 
   it "requires status to be one of allowed values" do
     record = described_class.new(external_id: "abc", status: "unknown")
+
     expect(record).not_to be_valid
     expect(record.errors[:status]).to be_present
   end
 
   it "has default structured_data as empty hash" do
     record = described_class.new(external_id: "abc", status: "pending")
+    
     expect(record.structured_data).to eq({})
   end
 end
