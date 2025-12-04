@@ -1,0 +1,62 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: barkibu-challenge-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=backend_development
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d $$POSTGRES_DB" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build:
+      context: ./backend
+      args:
+        RAILS_ENV: development
+        BUNDLE_WITHOUT: ""
+    container_name: barkibu-challenge-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - backend/.env
+    environment:
+      # Run Rails in development mode
+      - RAILS_ENV=development
+      - RAILS_LOG_TO_STDOUT=true
+      # Point to the dev database in the db service
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@db:5432/backend_development
+    ports:
+      - "3000:80" # host:container
+    # Uncomment to persist Rails storage/log/tmp locally if desired
+    # volumes:
+    #   - ./backend/storage:/rails/storage
+    #   - ./backend/log:/rails/log
+    #   - ./backend/tmp:/rails/tmp
+
+  frontend:
+    image: node:20-alpine
+    container_name: barkibu-challenge-frontend
+    working_dir: /app
+    command: sh -c "npm ci && npm run dev -- --host 0.0.0.0"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./frontend:/app
+      - frontend-node-modules:/app/node_modules
+    ports:
+      - "5173:5173"
+    # If your frontend calls the API, it can reach the backend at http://backend:80
+
+volumes:
+  db-data:
+  frontend-node-modules:
