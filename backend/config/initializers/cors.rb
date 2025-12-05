@@ -5,12 +5,20 @@
 
 # Read more: https://github.com/cyu/rack-cors
 
-# Rails.application.config.middleware.insert_before 0, Rack::Cors do
-#   allow do
-#     origins "example.com"
-#
-#     resource "*",
-#       headers: :any,
-#       methods: [:get, :post, :put, :patch, :delete, :options, :head]
-#   end
-# end
+# Be permissive in development so Swagger UI/localhost can reach the API.
+# For other environments, override via CORS_ORIGINS (comma-separated).
+Rails.application.config.middleware.insert_before 0, Rack::Cors do
+  allow do
+    origins(*(
+      if Rails.env.development?
+        ["*"]
+      else
+        ENV.fetch("CORS_ORIGINS", "example.com").split(",")
+      end
+    ))
+
+    resource "*",
+             headers: :any,
+             methods: %i[get post put patch delete options head]
+  end
+end

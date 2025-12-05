@@ -1,0 +1,45 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/api/v1/medical_records":
+    post:
+      summary: Creates a medical record
+      tags:
+      - MedicalRecords
+      parameters: []
+      responses:
+        '201':
+          description: medical record created
+      requestBody:
+        required: true
+        description: Document to attach to the medical record
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - document
+              properties:
+                document:
+                  type: string
+                  format: binary
+  "/api/v1/medical_records/{id}":
+    get:
+      summary: Retrieves a medical record
+      tags:
+      - MedicalRecords
+      parameters:
+      - name: id
+        in: path
+        description: Medical record ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: medical record found
+servers:
+- url: http://127.0.0.1:3000

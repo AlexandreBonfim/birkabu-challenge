@@ -18,7 +18,7 @@
 !/backend/tmp/.keep
 
 # Ignore pidfiles, but keep the directory.
-/backend/tmp/pids/*
+backend/tmp/pids/*
 !/backend/tmp/pids/
 !/backend/tmp/pids/.keep
 
