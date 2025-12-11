@@ -8,6 +8,7 @@ import {
   CTA_UPLOADING,
   FILE_HINT,
   PREVIEW_PLACEHOLDER,
+  UNKNOWN_FILE_TYPE,
 } from "../constants/messages";
 import { formatBytes } from "../utils/format";
 
@@ -49,7 +50,7 @@ export function UploadPanel({
           </span>
           <span className="muted">
             {file
-              ? `${file.type || "unknown type"} • ${formatBytes(file.size)}`
+              ? `${file.type || UNKNOWN_FILE_TYPE} • ${formatBytes(file.size)}`
               : FILE_HINT}
           </span>
         </div>
